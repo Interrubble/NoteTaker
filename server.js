@@ -32,16 +32,20 @@ app.get('/api/notes', (req, res) =>
 )
 
 // POST request for /api/notes
-app.post("/api/notes",(req,res)=>{
-    fs.readFile("./db/db.json","utf-8",(err,data)=>{
-        if(err){
+app.post("/api/notes", (req, res) => {
+    fs.readFile("./db/db.json", "utf-8", (err, data) => {
+        if (err) {
             throw err
         } else {
             const notes = JSON.parse(data);
-            console.log(req.body)
-            notes.push(req.body)
-            fs.writeFile("./db/db.json",JSON.stringify(notes,null,2),(err,data)=>{
-                if(err){
+            const newNotes = {
+                title: req.body.title,
+                text: req.body.text,
+                id: uuidv4()
+            }
+            notes.push(newNotes)
+            fs.writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err, data) => {
+                if (err) {
                     throw err
                 }
                 else {
@@ -53,11 +57,29 @@ app.post("/api/notes",(req,res)=>{
 })
 
 // DELETE request for /notes
-app.delete("/api/notes/:id",(req,res)=>{
-    const id = req.params.id;
-    const notes = data;
-    notes.splice(id,(err)=>{
-        if(err) return (err);
+app.delete(`/api/notes/:id`, (req, res) => {
+    fs.readFile("./db/db.json", "utf-8", (err, data) => {
+        if (err) {
+            throw err
+        } else {
+            const notes = JSON.parse(data);
+           let result =  notes.filter(function(index){
+                if (index.id!==req.params.id) {
+                    return true
+                } else {
+                    
+                    return false
+                }
+            })
+            fs.writeFile("./db/db.json", JSON.stringify(result, null, 2), (err, data) => {
+                if (err) {
+                    throw err
+                }
+                else {
+                    res.json({})
+                }
+            })
+        }
     })
 })
 
