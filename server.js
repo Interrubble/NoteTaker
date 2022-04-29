@@ -4,7 +4,6 @@ const data = require('./db/db.json');
 const PORT = process.env.PORT || 3001;
 const path = require('path');
 const fs = require('fs');
-const res = require('express/lib/response');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
@@ -47,8 +46,7 @@ app.post("/api/notes", (req, res) => {
             fs.writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err, data) => {
                 if (err) {
                     throw err
-                }
-                else {
+                } else {
                     res.json(notes)
                 }
             })
@@ -63,11 +61,10 @@ app.delete(`/api/notes/:id`, (req, res) => {
             throw err
         } else {
             const notes = JSON.parse(data);
-           let result =  notes.filter(function(index){
-                if (index.id!==req.params.id) {
+            let result = notes.filter(function (index) {
+                if (index.id !== req.params.id) {
                     return true
                 } else {
-                    
                     return false
                 }
             })
